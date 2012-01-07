@@ -1,9 +1,28 @@
+(Scroll down for latest updates)
+*** Quick Summary ***
 A 2D platformer in HTML5/Javascript that I am currently working on.
 Use WASD to move and Space to shoot. Press Enter to see statistics.
 
+*** How to Run it ***
 To play the game simply click the "Download as zip" button at the top of this page.
 Unzip the files and open the .html file in your favorite internet browser.
 (Does not work with old browsers, HTML5 support is required)
 
+*** Contact ***
 I'm open to any feature suggestions/bug reports so feel free to contact me.
-Contact: gedarovich@hotmail.com
+Email: gedarovich@hotmail.com
+
+*** Latest Updates (1/7/12)***
+A bunch of small changes that should make the game more enjoyable to play.
+- Platform hit detection now based on the whole player, not just the center
+	- This means that you can be on a platform all the way out to the last pixel
+- Death screen allows player to respawn with 1 health on the previous screen
+- Health bars shrunk
+- Health bars now show in two rows of 5
+- Every set of 10 health is color coded
+- Health is now shown in small text next to the health bars
+- Boss health bar changed to match the new style
+- Black border added to the game to see screen edges and look nice
+- Text at the top moved around slightly to acomodate changes\
+- Death counter added
+- Statistics page reworked slightly

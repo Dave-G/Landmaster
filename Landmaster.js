@@ -8,7 +8,7 @@
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 var FPS = 30;
-var dev = 0;
+var stats = 0;
 var frames = 0;
 var gravity = 7;
 var canJump = 0;
@@ -18,6 +18,7 @@ var currentWorld = 0;
 var gameOver = 0;
 var victory = 0;
 var kills = 0;
+var deaths = 0;
 var keysDown = {};
 canvas.width = 400;
 canvas.height = 400;
@@ -58,36 +59,127 @@ var player = {
 		if (this.health > this.maxHealth){
 			this.health = this.maxHealth;}
 		ctx.fillStyle = "black";
-		ctx.fillRect(3, 3, 14, 24);
-		ctx.fillRect(15, 3, 14, 24);
-		ctx.fillRect(27, 3, 14, 24);
+		ctx.fillRect(3, 3, 14, 14);
+		ctx.fillRect(15, 3, 14, 14);
+		ctx.fillRect(27, 3, 14, 14);
 		if (this.maxHealth >= 4){
-			ctx.fillRect(39, 3, 14, 24);}
+			ctx.fillRect(39, 3, 14, 14);}
 		if (this.maxHealth >= 5){
-			ctx.fillRect(51, 3, 14, 24);}
+			ctx.fillRect(51, 3, 14, 14);}
+		// Second row of black bars
+		if (this.maxHealth >= 6){
+			ctx.fillRect(3, 17, 14, 14);}
+		if (this.maxHealth >= 7){
+			ctx.fillRect(15, 17, 14, 14);}
+		if (this.maxHealth >= 8){
+			ctx.fillRect(27, 17, 14, 14);}
+		if (this.maxHealth >= 9){
+			ctx.fillRect(39, 17, 14, 14);}
+		if (this.maxHealth >= 10){
+			ctx.fillRect(51, 17, 14, 14);}
+		// First 10 health in green
 		if (this.health >= 1){
 			ctx.fillStyle = "green";
-			ctx.fillRect(5, 5, 10, 20);}
+			ctx.fillRect(5, 5, 10, 10);}
 		if (this.health >= 2){
-			ctx.fillRect(17, 5, 10, 20);}
+			ctx.fillRect(17, 5, 10, 10);}
 		if (this.health >= 3){
-			ctx.fillRect(29, 5, 10, 20);}
+			ctx.fillRect(29, 5, 10, 10);}
 		if (this.health >= 4){
-			ctx.fillRect(41, 5, 10, 20);}
+			ctx.fillRect(41, 5, 10, 10);}
 		if (this.health >= 5){
-			ctx.fillRect(53, 5, 10, 20);}
-		// Draw Level and Exp at the top
+			ctx.fillRect(53, 5, 10, 10);}
+		if (this.health >= 6){
+			ctx.fillRect(5, 19, 10, 10);}
+		if (this.health >= 7){
+			ctx.fillRect(17, 19, 10, 10);}
+		if (this.health >= 8){
+			ctx.fillRect(29, 19, 10, 10);}
+		if (this.health >= 9){
+			ctx.fillRect(41, 19, 10, 10);}
+		if (this.health >= 10){
+			ctx.fillRect(53, 19, 10, 10);}
+		// Health 11-20 health in yellow
+		if (this.health >= 11){
+			ctx.fillStyle = "yellow";
+			ctx.fillRect(5, 5, 10, 10);}
+		if (this.health >= 12){
+			ctx.fillRect(17, 5, 10, 10);}
+		if (this.health >= 13){
+			ctx.fillRect(29, 5, 10, 10);}
+		if (this.health >= 14){
+			ctx.fillRect(41, 5, 10, 10);}
+		if (this.health >= 15){
+			ctx.fillRect(53, 5, 10, 10);}
+		if (this.health >= 16){
+			ctx.fillRect(5, 19, 10, 10);}
+		if (this.health >= 17){
+			ctx.fillRect(17, 19, 10, 10);}
+		if (this.health >= 18){
+			ctx.fillRect(29, 19, 10, 10);}
+		if (this.health >= 19){
+			ctx.fillRect(41, 19, 10, 10);}
+		if (this.health >= 20){
+			ctx.fillRect(53, 19, 10, 10);}
+		// Health 21-30 health in orange
+		if (this.health >= 21){
+			ctx.fillStyle = "orange";
+			ctx.fillRect(5, 5, 10, 10);}
+		if (this.health >= 22){
+			ctx.fillRect(17, 5, 10, 10);}
+		if (this.health >= 23){
+			ctx.fillRect(29, 5, 10, 10);}
+		if (this.health >= 24){
+			ctx.fillRect(41, 5, 10, 10);}
+		if (this.health >= 25){
+			ctx.fillRect(53, 5, 10, 10);}
+		if (this.health >= 26){
+			ctx.fillRect(5, 19, 10, 10);}
+		if (this.health >= 27){
+			ctx.fillRect(17, 19, 10, 10);}
+		if (this.health >= 28){
+			ctx.fillRect(29, 19, 10, 10);}
+		if (this.health >= 29){
+			ctx.fillRect(41, 19, 10, 10);}
+		if (this.health >= 30){
+			ctx.fillRect(53, 19, 10, 10);}
+		// Health 31-40 health in red
+		if (this.health >= 31){
+			ctx.fillStyle = "red";
+			ctx.fillRect(5, 5, 10, 10);}
+		if (this.health >= 32){
+			ctx.fillRect(17, 5, 10, 10);}
+		if (this.health >= 33){
+			ctx.fillRect(29, 5, 10, 10);}
+		if (this.health >= 34){
+			ctx.fillRect(41, 5, 10, 10);}
+		if (this.health >= 35){
+			ctx.fillRect(53, 5, 10, 10);}
+		if (this.health >= 36){
+			ctx.fillRect(5, 19, 10, 10);}
+		if (this.health >= 37){
+			ctx.fillRect(17, 19, 10, 10);}
+		if (this.health >= 38){
+			ctx.fillRect(29, 19, 10, 10);}
+		if (this.health >= 39){
+			ctx.fillRect(41, 19, 10, 10);}
+		if (this.health >= 40){
+			ctx.fillRect(53, 19, 10, 10);}
+		// Draw Health/Max Health in text next to the bars
 		ctx.fillStyle = "black";
+		ctx.font = "8pt Arial";
+		ctx.fillText("(" + this.health + "/" + this.maxHealth +")", 65, 20);
+		// Draw Level and Exp at the top
 		ctx.font = "10pt Arial";
-		ctx.fillText("Level: " + this.level, 300, 10);
-		ctx.fillText("Exp: " + this.exp + "/" + this.level*this.level*100, 300, 30);
+		ctx.fillText("Level: " + this.level, 260, 15);
+		ctx.fillText("Exp: " + this.exp + "/" + this.level*this.level*100, 260, 30);
 		// Draw current location at the top
 		if (currentWorld == 5){
-		ctx.fillText("Location: Apathyville", 130, 10);}
+		ctx.fillText("Location: Apathyville", 115, 15);}
 		else if (currentWorld == -1){
-		ctx.fillText("Location: Magic Realm 0/3", 130, 10);}
+		ctx.fillText("Location: Magic Realm 0/3", 115, 15);}
 		else {
-		ctx.fillText("Location: Wilderness " + currentWorld, 130, 10);}
+		ctx.fillText("Location: Wilderness " + currentWorld, 115, 15);}
 	},
 	physics: function(){
 		if (canJump == 1){
@@ -326,22 +418,22 @@ var enemyBoss = {
 			this.width/2, this.height/2);
 		// Draw health bars above the enemy
 		ctx.fillStyle = "black";
-		ctx.fillRect(this.x - this.width + 28, this.y - this.height - 2, 14, 24);
-		ctx.fillRect(this.x - this.width + 40, this.y - this.height - 2, 14, 24);
-		ctx.fillRect(this.x - this.width + 52, this.y - this.height - 2, 14, 24);
-		ctx.fillRect(this.x - this.width + 64, this.y - this.height - 2, 14, 24);
-		ctx.fillRect(this.x - this.width + 76, this.y - this.height - 2, 14, 24);
+		ctx.fillRect(this.x - this.width + 28, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 40, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 52, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 64, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 76, this.y - this.height - 2, 14, 14);
 		if (this.health >= 1){
 			ctx.fillStyle = "green";
-			ctx.fillRect(this.x - this.width + 30, this.y - this.height, 10, 20);}
+			ctx.fillRect(this.x - this.width + 30, this.y - this.height, 10, 10);}
 		if (this.health >= 2){
-			ctx.fillRect(this.x - this.width + 42, this.y - this.height, 10, 20);}
+			ctx.fillRect(this.x - this.width + 42, this.y - this.height, 10, 10);}
 		if (this.health >= 3){
-			ctx.fillRect(this.x - this.width + 54, this.y - this.height, 10, 20);}
+			ctx.fillRect(this.x - this.width + 54, this.y - this.height, 10, 10);}
 		if (this.health >= 4){
-			ctx.fillRect(this.x - this.width + 66, this.y - this.height, 10, 20);}
+			ctx.fillRect(this.x - this.width + 66, this.y - this.height, 10, 10);}
 		if (this.health >= 5){
-			ctx.fillRect(this.x - this.width + 78, this.y - this.height, 10, 20);}
+			ctx.fillRect(this.x - this.width + 78, this.y - this.height, 10, 10);}
 		}
 		else{
 			this.x = -100;
@@ -355,7 +447,7 @@ var enemyBoss = {
 	},
 	hit: function(){
 	if (hitCooldown == 0){
-		player.health -= 2;
+		player.health--;
 		hitCooldown = 30;
 		if (player.health <= 0){
 			gameOver = 1;}}
@@ -417,7 +509,9 @@ var npcHealer = {
 	},
 	hit: function(){
 		this.msgTime = 15;
-		player.health = player.maxHealth;
+		player.health++;
+		if (player.health > player.maxHealth){
+		player.health = player.maxHealth;}
 	}
 };
 
@@ -553,25 +647,39 @@ var clear = function(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 };
 
-// Dev info, display variables
-var drawDev = function(){
+// Stats page
+var drawStats = function(){
 	ctx.fillStyle = "black";
 	ctx.font = "10pt Arial";
-	ctx.fillText("Overall Stats", 10, 10);
-	ctx.fillText("Enemies Killed: " + kills, 10, 30);
-	ctx.fillText("Frames/Seconds: " + frames + " / " + Math.round(frames/30), 10, 50);
+	ctx.fillText("Overall Stats", 10, 15);
+	ctx.fillText("Level: " + player.level, 10, 35);
+	ctx.fillText("Exp: " + player.exp + "/" + player.level*player.level*100, 10, 55);
+	ctx.fillText("Enemies Killed: " + kills, 10, 75);
+	ctx.fillText("Deaths: " + deaths, 10, 95);
+	ctx.fillText("Frames/Seconds: " + frames + " / " + Math.round(frames/30), 10, 115);
 };
 
 // Game Over Screen
 var drawGameOver = function(){
 		ctx.fillStyle = "black";
 		ctx.font = "30pt Arial";
-		ctx.fillText("GAME OVER", 50, 150);
+		ctx.fillText("You have died.", 50, 150);
+		ctx.font = "20pt Arial";
+		ctx.fillText("Press Enter to respawn.", 45, 190);
+};
+
+// Background
+var drawBG = function(){
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "white";
+		ctx.fillRect(1, 1, canvas.width - 2, canvas.height - 2);
 };
 
 // Draw on the canvas
 var draw = function(){
 	clear();
+	drawBG();
 	player.draw();
 	enemy.draw();
 	enemy2.draw();
@@ -588,11 +696,13 @@ var draw = function(){
 	platformSmall2.draw();
 	laser.draw();
 	marker.draw();
-	if (dev == 1){
+	if (stats == 1){
 	clear();
-	drawDev();}
+	drawBG();
+	drawStats();}
 	if (gameOver == 1){
 	clear();
+	drawBG();
 	drawGameOver();}
 };
 
@@ -606,69 +716,77 @@ var cdHandler = function(){
 
 // All key conditions
 var keys = function(){
-  // W - Jump
-  if (87 in keysDown && canJump == 1){
-    canJump = 0;
-    player.jspeed = 13; }
-  // D - Move Right
-  if (68 in keysDown){
-    if (laser.timeLeft == 0){
-    laser.goingRight = 1;}
-    player.x += player.mspeed; }
-  // A - Move Left
-  if (65 in keysDown){
-    if (laser.timeLeft == 0){
-    laser.goingRight = 0;}
-    player.x -= player.mspeed;
-    // Don't allow moving off the left side of the screen in world 0 or -1
-    if ((currentWorld == 0 || currentWorld == -1) && player.x <= 0){
-	player.x = 0; }}
-  // S - Drop Down
-  if (83 in keysDown && canJump == 1 && player.y < canvas.height - player.height){
-    player.y += player.height / 2;
-    player.jspeed = -1;
-    canJump = 0; }
-  // Space - Fire laser
-  if (32 in keysDown && cooldown == 0){
-    cooldown = 20;
-    laser.shoot(); }
-  // Enter - Dev Info
-  if (13 in keysDown && cooldown == 0){
-    cooldown = 30;
-    if (dev == 0){
-	dev = 1;}
-    else dev = 0; }
+	// W - Jump
+	if (87 in keysDown && canJump == 1){
+		canJump = 0;
+		player.jspeed = 13; }
+	// D - Move Right
+	if (68 in keysDown){
+		if (laser.timeLeft == 0){
+		laser.goingRight = 1;}
+		player.x += player.mspeed; }
+	// A - Move Left
+	if (65 in keysDown){
+		if (laser.timeLeft == 0){
+		laser.goingRight = 0;}
+		player.x -= player.mspeed;
+		// Don't allow moving off the left side of the screen in world 0 or -1
+		if ((currentWorld == 0 || currentWorld == -1) && player.x <= 0){
+		player.x = 0; }}
+	// S - Drop Down
+	if (83 in keysDown && canJump == 1 && player.y < canvas.height - player.height){
+		player.y += player.height / 2;
+		player.jspeed = -1;
+		canJump = 0; }
+	// Space - Fire laser
+	if (32 in keysDown && cooldown == 0){
+		cooldown = 20;
+		laser.shoot();}
+	// Enter - Display Stats or Respawn
+	if (13 in keysDown && cooldown == 0){
+		cooldown = 15;
+		if (stats == 0){
+		stats = 1;}
+		else stats = 0;
+		// Respawn
+		if (gameOver == 1){
+		gameOver = 0;
+		stats = 0;
+		deaths++;
+		hitCooldown = 30;
+		player.health = 1;
+		player.x = -1;}}
 };
 
 // Check if the player lands on something
 var hitGround = function(){
 	// Platform
-	if ((player.x < platform.x + platform.width/2 && player.x > platform.x - platform.width/2)&&
+	if ((player.x < platform.x + platform.width/2 + player.width/2 && player.x > platform.x - platform.width/2 - player.width/2)&&
 	    (player.y <= platform.y - platform.height && player.y >= platform.y - platform.height - 10)){
 	player.y = platform.y - player.height/2;
 	canJump = 1;}
 	// Platform2
-	else if ((player.x < platform2.x + platform2.width/2 && player.x > platform2.x - platform2.width/2)&&
+	else if ((player.x < platform2.x + platform2.width/2 + player.width/2 && player.x > platform2.x - platform2.width/2 - player.width/2)&&
 	    (player.y <= platform2.y - platform2.height && player.y >= platform2.y - platform2.height - 10)){
 	player.y = platform2.y - player.height/2;
 	canJump = 1;}
 	// PlatformLong
-	else if ((player.x < platformLong.x + platformLong.width/2 && player.x > platformLong.x - platformLong.width/2)&&
+	else if ((player.x < platformLong.x + platformLong.width/2 + player.width/2 && player.x > platformLong.x - platformLong.width/2 - player.width/2)&&
 	    (player.y <= platformLong.y - platformLong.height && player.y >= platformLong.y - platformLong.height - 10)){
 	player.y = platformLong.y - player.height/2;
 	canJump = 1;}
 	// PlatformLong2
-	else if ((player.x < platformLong2.x + platformLong2.width/2 && player.x > platformLong2.x - platformLong2.width/2)&&
+	else if ((player.x < platformLong2.x + platformLong2.width/2 + player.width/2 && player.x > platformLong2.x - platformLong2.width/2 - player.width/2)&&
 	    (player.y <= platformLong2.y - platformLong2.height && player.y >= platformLong2.y - platformLong2.height - 10)){
 	player.y = platformLong2.y - player.height/2;
 	canJump = 1;}
 	// PlatformSmall
-	else if ((player.x < platformSmall.x + platformSmall.width/2 && player.x > platformSmall.x - platformSmall.width/2)&&
+	else if ((player.x < platformSmall.x + platformSmall.width/2 + player.width/2 && player.x > platformSmall.x - platformSmall.width/2 - player.width/2)&&
 	    (player.y <= platformSmall.y - platformSmall.height && player.y >= platformSmall.y - platformSmall.height - 10)){
 	player.y = platformSmall.y - player.height/2;
 	canJump = 1;}
 	// PlatformSmall2
-	else if ((player.x < platformSmall2.x + platformSmall2.width/2 && player.x > platformSmall2.x - platformSmall2.width/2)&&
+	else if ((player.x < platformSmall2.x + platformSmall2.width/2 + player.width/2 && player.x > platformSmall2.x - platformSmall2.width/2 - player.width/2)&&
 	    (player.y <= platformSmall2.y - platformSmall2.height && player.y >= platformSmall2.y - platformSmall2.height - 10)){
 	player.y = platformSmall2.y - player.height/2;
 	canJump = 1;}
