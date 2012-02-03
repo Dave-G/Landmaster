@@ -3,6 +3,7 @@
 A 2D platformer in HTML5/Javascript that I am currently working on.
 Use WASD to move and Space to shoot. Press Enter to see statistics and skills.
 Number keys such as 1, 2, 3... (above WASD) are used for skills.
+jquery, json, and jstorage are used as a basis for the save system.
 
 *** How to Run it ***
 To play the game simply click the "Download as zip" button at the top of this page.
@@ -13,8 +14,10 @@ Unzip the files and open the .html file in your favorite internet browser.
 I'm open to any feature suggestions/bug reports so feel free to contact me.
 Email: gedarovich@hotmail.com
 
-*** Latest Updates (2/2/12)***
+*** Latest Updates (2/3/12)***
 A good bit of new content, notably the start of the skill system.
+- Added jquery/json/jstorage libraries for the basis of a good save system
+	- Game will work fine whether you choose to include the libraries or not
 - Added the first unlockable skill: Spike (delayed spike, shoots upwards, 2 damage)
 - You can now see which direction the player is facing
 - Added second boss zone
