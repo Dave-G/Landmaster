@@ -1,7 +1,7 @@
 /* Created by David Gedarovich
  * http://www.github.com/Dave-G
  * gedarovich@hotmail.com
- * Updated: 1/7/12
+ * Updated: 2/2/12
  */
 
 // Variables and Canvas
@@ -42,6 +42,7 @@ var player = {
 	maxHealth: 3,
 	level: 1,
 	exp: 0,
+	goingRight: 1,
 	x: 20,
 	y: 385,
 	width: 20,
@@ -55,6 +56,11 @@ var player = {
 		ctx.fillRect(this.x - this.width / 2, 
 			this.y - this.height / 2,
 			this.width, this.height);
+		// Show which direction the player is facing
+		if (this.goingRight == 1){
+			ctx.fillRect(this.x + this.width - 7, this.y - 3, 5, 5);}
+		if (this.goingRight == 0){
+			ctx.fillRect(this.x - this.width + 2, this.y - 3, 5, 5);}
 		// Draw health bars at the top
 		if (this.health > this.maxHealth){
 			this.health = this.maxHealth;}
@@ -176,8 +182,8 @@ var player = {
 		// Draw current location at the top
 		if (currentWorld == 5){
 		ctx.fillText("Location: Apathyville", 115, 15);}
-		else if (currentWorld == -1){
-		ctx.fillText("Location: Magic Realm 0/3", 115, 15);}
+		else if (currentWorld <= -1){
+		ctx.fillText("Location: Magic Realm", 115, 15);}
 		else {
 		ctx.fillText("Location: Wilderness " + currentWorld, 115, 15);}
 	},
@@ -194,6 +200,27 @@ var player = {
 	}
 };
 
+// Skills the player can unlock and use
+var skills = {
+	spikeUnlocked: 0,
+	spikeUses: 0,
+	spikeCooldown: 0,
+	spikeX: -300,
+	spikeY: -100,
+	draw: function(){
+		if (this.spikeCooldown > 0){
+			ctx.fillStyle = "blue";
+			ctx.fillRect(this.spikeX - 2 / 2,
+			this.spikeY - 40 / 2,
+			2, 40);
+			}
+		else{
+			this.spikeX = -300;
+			this.spikeY = -100;}
+	}		
+};
+	
+
 // Marker for displaying floating text
 var marker = {
 	color: "black",
@@ -206,6 +233,26 @@ var marker = {
 		ctx.fillStyle = this.color;
 		ctx.font = "15pt Arial";
 		ctx.fillText("Level Up! HP+1!", this.x, this.y);}
+	},
+	move: function(){
+		if (this.timeLeft > 0){
+			this.y -= this.speed;
+			this.timeLeft--;}
+	}
+};
+
+// Marker for displaying  more floating text
+var marker2 = {
+	color: "black",
+	speed: 2,
+	timeLeft: 0,
+	x: -100,
+	y: -100,
+	draw: function(){
+		if (this.timeLeft != 0){
+		ctx.fillStyle = this.color;
+		ctx.font = "15pt Arial";
+		ctx.fillText("Spike Unlocked!", this.x, this.y);}
 	},
 	move: function(){
 		if (this.timeLeft > 0){
@@ -360,7 +407,7 @@ var enemy2 = {
 var enemyChaser = {
 	color: "red",
 	speed: 2,
-	exp: 10,
+	exp: 5,
 	alive: 0,
 	x: -100,
 	y: -100,
@@ -403,7 +450,7 @@ var enemyBoss = {
 	health: 5,
 	alive: 1,
 	x: 300,
-	y: 340,
+	y: 370,
 	width: 60,
 	height: 60,
 	draw: function(){
@@ -433,6 +480,76 @@ var enemyBoss = {
 		if (this.health >= 4){
 			ctx.fillRect(this.x - this.width + 66, this.y - this.height, 10, 10);}
 		if (this.health >= 5){
+			ctx.fillRect(this.x - this.width + 78, this.y - this.height, 10, 10);}
+		}
+		else{
+			this.x = -100;
+			this.y = -100;}
+	},
+	chase: function(){
+		if (this.x > player.x){
+		this.x -= this.speed;}
+		if (this.x < player.x){
+		this.x += this.speed;} 
+	},
+	hit: function(){
+	if (hitCooldown == 0){
+		player.health--;
+		hitCooldown = 30;
+		if (player.health <= 0){
+			gameOver = 1;}}
+	}
+};
+
+// Enemy Boss that chases the player with more health
+var enemyBoss2 = {
+	color: "red",
+	speed: 2,
+	exp: 100,
+	health: 10,
+	alive: 1,
+	x: 300,
+	y: 370,
+	width: 60,
+	height: 60,
+	draw: function(){
+		if (this.alive == 1 && currentWorld == -2){
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.x - this.width / 2,
+			this.y - this.height / 2,
+			this.width, this.height);
+		ctx.fillStyle = "black";
+		ctx.fillRect(this.x - this.width / 4,
+			this.y - this.height / 4,
+			this.width/2, this.height/2);
+		// Draw health bars above the enemy
+		ctx.fillStyle = "black";
+		ctx.fillRect(this.x - this.width + 28, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 40, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 52, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 64, this.y - this.height - 2, 14, 14);
+		ctx.fillRect(this.x - this.width + 76, this.y - this.height - 2, 14, 14);
+		if (this.health >= 1){
+			ctx.fillStyle = "green";
+			ctx.fillRect(this.x - this.width + 30, this.y - this.height, 10, 10);}
+		if (this.health >= 2){
+			ctx.fillRect(this.x - this.width + 42, this.y - this.height, 10, 10);}
+		if (this.health >= 3){
+			ctx.fillRect(this.x - this.width + 54, this.y - this.height, 10, 10);}
+		if (this.health >= 4){
+			ctx.fillRect(this.x - this.width + 66, this.y - this.height, 10, 10);}
+		if (this.health >= 5){
+			ctx.fillRect(this.x - this.width + 78, this.y - this.height, 10, 10);}
+		if (this.health >= 6){
+			ctx.fillStyle = "yellow";
+			ctx.fillRect(this.x - this.width + 30, this.y - this.height, 10, 10);}
+		if (this.health >= 7){
+			ctx.fillRect(this.x - this.width + 42, this.y - this.height, 10, 10);}
+		if (this.health >= 8){
+			ctx.fillRect(this.x - this.width + 54, this.y - this.height, 10, 10);}
+		if (this.health >= 9){
+			ctx.fillRect(this.x - this.width + 66, this.y - this.height, 10, 10);}
+		if (this.health >= 10){
 			ctx.fillRect(this.x - this.width + 78, this.y - this.height, 10, 10);}
 		}
 		else{
@@ -523,7 +640,6 @@ var laser = {
 	y: -200,
 	timeLeft: 0,
 	speed: 8,
-	goingRight: 1,
 	width: 6,
 	height: 6,
 	draw: function(){
@@ -542,10 +658,10 @@ var laser = {
 		this.y = player.y;
 	},
 	move: function(){
-		if (this.timeLeft > 0 && this.goingRight == 1){
+		if (this.timeLeft > 0 && player.goingRight == 1){
 			this.timeLeft--;
 			this.x += this.speed;}
-		else if (this.timeLeft > 0 && this.goingRight == 0){
+		else if (this.timeLeft > 0 && player.goingRight == 0){
 			this.timeLeft--;
 			this.x -= this.speed;}
 	}
@@ -656,7 +772,9 @@ var drawStats = function(){
 	ctx.fillText("Exp: " + player.exp + "/" + player.level*player.level*100, 10, 55);
 	ctx.fillText("Enemies Killed: " + kills, 10, 75);
 	ctx.fillText("Deaths: " + deaths, 10, 95);
-	ctx.fillText("Frames/Seconds: " + frames + " / " + Math.round(frames/30), 10, 115);
+	ctx.fillText("Skills", 10, 135);
+	if (skills.spikeUnlocked == 1){
+		ctx.fillText("Spike (1) - " + skills.spikeUses + " total uses", 10, 155);}
 };
 
 // Game Over Screen
@@ -685,6 +803,7 @@ var draw = function(){
 	enemy2.draw();
 	enemyChaser.draw();
 	enemyBoss.draw();
+	enemyBoss2.draw();
 	npc.draw();
 	npcHealer.draw();
 	portal.draw();
@@ -695,15 +814,17 @@ var draw = function(){
 	platformSmall.draw();
 	platformSmall2.draw();
 	laser.draw();
+	skills.draw();
 	marker.draw();
+	marker2.draw();
 	if (stats == 1){
-	clear();
-	drawBG();
-	drawStats();}
+		clear();
+		drawBG();
+		drawStats();}
 	if (gameOver == 1){
-	clear();
-	drawBG();
-	drawGameOver();}
+		clear();
+		drawBG();
+		drawGameOver();}
 };
 
 // Cooldown handling
@@ -712,6 +833,10 @@ var cdHandler = function(){
 		cooldown--;}
 	if (hitCooldown > 0){
 		hitCooldown--;}
+	if (skills.spikeCooldown > 0){
+		skills.spikeCooldown--;
+		if (skills.spikeCooldown < 20){
+			skills.spikeY -= 10;}}
 };
 
 // All key conditions
@@ -723,12 +848,15 @@ var keys = function(){
 	// D - Move Right
 	if (68 in keysDown){
 		if (laser.timeLeft == 0){
-		laser.goingRight = 1;}
-		player.x += player.mspeed; }
+		player.goingRight = 1;}
+		player.x += player.mspeed;
+		// Don't allow moving off the ride side of the screen in world -2
+		if (currentWorld == -2 && player.x >= canvas.width){
+		player.x = canvas.width; }}	
 	// A - Move Left
 	if (65 in keysDown){
 		if (laser.timeLeft == 0){
-		laser.goingRight = 0;}
+		player.goingRight = 0;}
 		player.x -= player.mspeed;
 		// Don't allow moving off the left side of the screen in world 0 or -1
 		if ((currentWorld == 0 || currentWorld == -1) && player.x <= 0){
@@ -756,6 +884,15 @@ var keys = function(){
 		hitCooldown = 30;
 		player.health = 1;
 		player.x = -1;}}
+	// 1 - Spike
+	if (49 in keysDown && skills.spikeCooldown == 0 && skills.spikeUnlocked == 1){
+		skills.spikeUses++;
+		skills.spikeCooldown = 40;
+		if (player.goingRight == 1){
+			skills.spikeX = player.x + 70;}
+		else{
+			skills.spikeX = player.x - 70;}
+		skills.spikeY = player.y;}
 };
 
 // Check if the player lands on something
@@ -815,6 +952,10 @@ var hitEnemy = function(){
 	if ((enemyBoss.x + enemyBoss.width/2 >= player.x - player.width/2) && (enemyBoss.x - enemyBoss.width/2 <= player.x + player.width/2) &&
 	(enemyBoss.y + enemyBoss.height/2 >= player.y - player.height/2) && (enemyBoss.y - enemyBoss.height/2 <= player.y + player.height/2)){
 	enemyBoss.hit();}
+	// Player hits enemyBoss2
+	if ((enemyBoss2.x + enemyBoss2.width/2 >= player.x - player.width/2) && (enemyBoss2.x - enemyBoss2.width/2 <= player.x + player.width/2) &&
+	(enemyBoss2.y + enemyBoss2.height/2 >= player.y - player.height/2) && (enemyBoss2.y - enemyBoss2.height/2 <= player.y + player.height/2)){
+	enemyBoss2.hit();}
 	// Player hits npc
 	if ((npc.x + npc.width/2 >= player.x - player.width/2) && (npc.x - npc.width/2 <= player.x + player.width/2) &&
 	(npc.y + npc.height/2 >= player.y - player.height/2) && (npc.y - npc.height/2 <= player.y + player.height/2)){
@@ -864,11 +1005,87 @@ var hitEnemy = function(){
 	laser.y = -200;
 	enemyBoss.health--;
 	if (enemyBoss.health <= 0){
-	enemyBoss.x = -100;
-	enemyBoss.y = -100;
-	enemyBoss.alive = 0;
+		enemyBoss.x = -100;
+		enemyBoss.y = -100;
+		enemyBoss.alive = 0;
+		player.exp += enemyBoss.exp;
+		kills++;}}
+	// Laser hits enemyBoss2
+	if ((enemyBoss2.x + enemyBoss2.width/2 >= laser.x - laser.width/2) && (enemyBoss2.x - enemyBoss2.width/2 <= laser.x + laser.width/2) &&
+	(enemyBoss2.y + enemyBoss2.height/2 >= laser.y - laser.height/2) && (enemyBoss2.y - enemyBoss2.height/2 <= laser.y + laser.height/2)){
+	laser.x = -100;
+	laser.y = -200;
+	enemyBoss2.health--;
+	if (enemyBoss2.health <= 0){
+		enemyBoss2.x = -100;
+		enemyBoss2.y = -100;
+		enemyBoss2.alive = 0;
+		skills.spikeUnlocked = 1;
+		marker2.timeLeft = 60;
+		marker2.x = 100;
+		marker2.y = 350;
+		player.exp += enemyBoss2.exp;
+		kills++;}}
+	// Spike hits enemy
+	if ((enemy.x + enemy.width/2 >= skills.spikeX - 2/2) && (enemy.x - enemy.width/2 <= skills.spikeX + 2) &&
+	(enemy.y + enemy.height/2 >= skills.spikeY - 40/2) && (enemy.y - enemy.height/2 <= skills.spikeY + 40)){
+	skills.spikeX = -100;
+	skills.spikeY = -200;
+	enemy.x = -100;
+	enemy.y = -100;
+	enemy.alive = 0;
+	player.exp += enemy.exp;
+	kills++;}
+	// Spike hits enemy2
+	if ((enemy2.x + enemy2.width/2 >= skills.spikeX - 2/2) && (enemy2.x - enemy2.width/2 <= skills.spikeX + 2) &&
+	(enemy2.y + enemy2.height/2 >= skills.spikeY - 40/2) && (enemy2.y - enemy2.height/2 <= skills.spikeY + 40)){
+	skills.spikeX = -100;
+	skills.spikeY = -200;
+	enemy2.x = -100;
+	enemy2.y = -100;
+	enemy2.alive = 0;
+	player.exp += enemy2.exp;
+	kills++;}
+	// Spike hits enemyChaser
+	if ((enemyChaser.x + enemyChaser.width/2 >= skills.spikeX - 2/2) && (enemyChaser.x - enemyChaser.width/2 <= skills.spikeX + 2) &&
+	(enemyChaser.y + enemyChaser.height/2 >= skills.spikeY - 40/2) && (enemyChaser.y - enemyChaser.height/2 <= skills.spikeY + 40)){
+	skills.spikeX = -100;
+	skills.spikeY = -200;
+	enemyChaser.x = -100;
+	enemyChaser.y = -100;
+	enemyChaser.alive = 0;
+	player.exp += enemyChaser.exp;
+	kills++;}
+	// Spike hits enemyBoss
+	if ((enemyBoss.x + enemyBoss.width/2 >= skills.spikeX - 2/2) && (enemyBoss.x - enemyBoss.width/2 <= skills.spikeX + 2) &&
+	(enemyBoss.y + enemyBoss.height/2 >= skills.spikeY - 40/2) && (enemyBoss.y - enemyBoss.height/2 <= skills.spikeY + 40)){
+	skills.spikeX = -100;
+	skills.spikeY = -200;
+	enemyBoss.health -= 2;
 	player.exp += enemyBoss.exp;
-	kills++;}}
+	if (enemyBoss.health <= 0){
+		enemyBoss.x = -100;
+		enemyBoss.y = -100;
+		enemyBoss.alive = 0;
+		player.exp += enemyBoss.exp;
+		kills++;}}
+	// Spike hits enemyBoss2
+	if ((enemyBoss2.x + enemyBoss2.width/2 >= skills.spikeX - 2/2) && (enemyBoss2.x - enemyBoss2.width/2 <= skills.spikeX + 2) &&
+	(enemyBoss2.y + enemyBoss2.height/2 >= skills.spikeY - 40/2) && (enemyBoss2.y - enemyBoss2.height/2 <= skills.spikeY + 40)){
+	skills.spikeX = -100;
+	skills.spikeY = -200;
+	enemyBoss2.health -= 2;
+	player.exp += enemyBoss2.exp;
+	if (enemyBoss2.health <= 0){
+		enemyBoss2.x = -100;
+		enemyBoss2.y = -100;
+		enemyBoss2.alive = 0;
+		skills.spikeUnlocked = 1;
+		marker2.timeLeft = 60;
+		marker2.x = 100;
+		marker2.y = 350;
+		player.exp += enemyBoss2.exp;
+		kills++;}}
 };
 
 // Check for level ups
@@ -1075,6 +1292,67 @@ var worldMove = function(){
 		platformSmall.y = -100;
 		platformSmall2.x = -100;
 		platformSmall2.y = -100;}
+	// Move to Magic Realm starting area	
+	if (player.x < 0 && currentWorld == -2){
+		currentWorld = -1;
+		player.x = canvas.width;
+		laser.x = -100;
+		laser.y = -200;
+		enemy.alive = 1;
+		enemy.x = 200;
+		enemy.y = 230;
+		enemy2.alive = 1;
+		enemy2.x = 240;
+		enemy2.y = 180;
+		enemyChaser.alive = 1;
+		enemyChaser.x = 200;
+		enemyChaser.y = 390;
+		npc.alive = 0;
+		npcHealer.alive = 0;
+		portal.alive = 1;
+		portal.x = 250;
+		portal.y = 80;
+		platform.x = 250;
+		platform.y = 100;
+		platform2.x = 30;
+		platform2.y = 320;
+		platformLong.x = 180;
+		platformLong.y = 240;
+		platformLong2.x = 230;
+		platformLong2.y = 190;
+		platformSmall.x = 100;
+		platformSmall.y = 270;
+		platformSmall2.x = 140;
+		platformSmall2.y = 320;}
+	// Move to Magic Realm Boss Zone
+	if (player.x > canvas.width && currentWorld == -1){
+		currentWorld = -2;
+		player.x = 0;
+		laser.x = -100;
+		laser.y = -200;
+		enemy.alive = 1;
+		enemy.x = 30;
+		enemy.y = 240;
+		enemy2.alive = 0;
+		enemyChaser.alive = 0;
+		enemyBoss2.x = 300;
+		enemyBoss2.y = 370;
+		enemyBoss2.health = 10;
+		npc.alive = 0;
+		npcHealer.alive = 0;
+		portal.alive = 0;
+		platform.x = 140;
+		platform.y = 120;
+		platform2.x = -100;
+		platform2.y = -100;
+		platformLong.x = 30;
+		platformLong.y = 250;
+		platformLong2.x = -100;
+		platformLong2.y = -100;
+		platformSmall.x = 130;
+		platformSmall.y = 190;
+		platformSmall2.x = 50;
+		platformSmall2.y = 320;}
 };	
 
 // Run Everything
@@ -1086,7 +1364,9 @@ setInterval(function(){
   enemy2.wander();
   enemyChaser.chase();
   enemyBoss.chase();
+  enemyBoss2.chase();
   marker.move();
+  marker2.move();
   cdHandler();
   hitGround();
   hitEnemy();

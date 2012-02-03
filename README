@@ -1,7 +1,8 @@
 (Scroll down for latest updates)
 *** Quick Summary ***
 A 2D platformer in HTML5/Javascript that I am currently working on.
-Use WASD to move and Space to shoot. Press Enter to see statistics.
+Use WASD to move and Space to shoot. Press Enter to see statistics and skills.
+Number keys such as 1, 2, 3... (above WASD) are used for skills.
 
 *** How to Run it ***
 To play the game simply click the "Download as zip" button at the top of this page.
@@ -12,17 +13,10 @@ Unzip the files and open the .html file in your favorite internet browser.
 I'm open to any feature suggestions/bug reports so feel free to contact me.
 Email: gedarovich@hotmail.com
 
-*** Latest Updates (1/7/12)***
-A bunch of small changes that should make the game more enjoyable to play.
-- Platform hit detection now based on the whole player, not just the center
-	- This means that you can be on a platform all the way out to the last pixel
-- Death screen allows player to respawn with 1 health on the previous screen
-- Health bars shrunk
-- Health bars now show in two rows of 5
-- Every set of 10 health is color coded
-- Health is now shown in small text next to the health bars
-- Boss health bar changed to match the new style
-- Black border added to the game to see screen edges and look nice
-- Text at the top moved around slightly to accomodate changes
-- Death counter added
-- Statistics page reworked slightly
+*** Latest Updates (2/2/12)***
+A good bit of new content, notably the start of the skill system.
+- Added the first unlockable skill: Spike (delayed spike, shoots upwards, 2 damage)
+- You can now see which direction the player is facing
+- Added second boss zone
+- Skills and total uses added to the stats page (when you press Enter)
+- Text animation added for unlocking skills
