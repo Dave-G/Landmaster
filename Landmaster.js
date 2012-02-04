@@ -1,7 +1,7 @@
 /* Created by David Gedarovich
  * http://www.github.com/Dave-G
  * gedarovich@hotmail.com
- * Updated: 2/2/12
+ * Updated: 2/3/12
  */
 
 // Variables and Canvas
@@ -14,11 +14,21 @@ var gravity = 7;
 var canJump = 0;
 var cooldown = 0;
 var hitCooldown = 0;
-var currentWorld = 0;
 var gameOver = 0;
 var victory = 0;
-var kills = 0;
-var deaths = 0;
+// Try to recall saved variables, otherwise default them
+var kills = $.jStorage.get("kills");
+if(!kills){
+		var kills = 0;
+		$.jStorage.set("kills",kills);}
+var deaths = $.jStorage.get("deaths");
+if(!deaths){
+		var deaths = 0;
+		$.jStorage.set("deaths",deaths);}
+var currentWorld = $.jStorage.get("currentWorld");
+if(!currentWorld){
+		var currentWorld = 0;
+		$.jStorage.set("currentWorld",currentWorld);}
 var keysDown = {};
 canvas.width = 400;
 canvas.height = 400;
@@ -43,7 +53,7 @@ var player = {
 	level: 1,
 	exp: 0,
 	goingRight: 1,
-	x: 20,
+	x: -1,
 	y: 385,
 	width: 20,
 	height: 20,
@@ -200,6 +210,24 @@ var player = {
 	}
 };
 
+// Load in saved variables, otherwise default
+player.exp = $.jStorage.get("exp");
+if(!player.exp){
+		player.exp = 0;
+		$.jStorage.set("exp",player.exp);}
+player.level = $.jStorage.get("level");
+if(!player.level){
+		player.level = 1;
+		$.jStorage.set("level",player.level);}
+player.health = $.jStorage.get("health");
+if(!player.health){
+		player.health = 3;
+		$.jStorage.set("health",player.health);}
+player.maxHealth = $.jStorage.get("maxHealth");
+if(!player.maxHealth){
+		player.maxHealth = 3;
+		$.jStorage.set("maxHealth",player.maxHealth);}
+
 // Skills the player can unlock and use
 var skills = {
 	spikeUnlocked: 0,
@@ -219,9 +247,19 @@ var skills = {
 			this.spikeY = -100;}
 	}		
 };
+
+// Load in saved variables, otherwise default
+skills.spikeUnlocked = $.jStorage.get("spikeUnlocked");
+if(!player.spikeUnlocked){
+		player.spikeUnlocked = 0;
+		$.jStorage.set("spikeUnlocked",player.spikeUnlocked);}
+skills.spikeUses = $.jStorage.get("spikeUses");
+if(!player.spikeUses){
+		player.spikeUses = 0;
+		$.jStorage.set("spikeUses",player.spikeUses);}
 	
 
-// Marker for displaying floating text
+// Marker for displaying level ups
 var marker = {
 	color: "black",
 	speed: 2,
@@ -241,7 +279,7 @@ var marker = {
 	}
 };
 
-// Marker for displaying  more floating text
+// Marker for displaying skill unlocks
 var marker2 = {
 	color: "black",
 	speed: 2,
@@ -252,12 +290,32 @@ var marker2 = {
 		if (this.timeLeft != 0){
 		ctx.fillStyle = this.color;
 		ctx.font = "15pt Arial";
-		ctx.fillText("Spike Unlocked!", this.x, this.y);}
+		ctx.fillText("Skill Unlocked!", this.x, this.y);}
 	},
 	move: function(){
 		if (this.timeLeft > 0){
 			this.y -= this.speed;
 			this.timeLeft--;}
+	}
+};
+
+// Marker for displaying skill unlocks
+var marker3 = {
+	color: "black",
+	timeLeft: 0,
+	x: -100,
+	y: -100,
+	draw: function(){
+		if (this.timeLeft != 0){
+		ctx.fillStyle = this.color;
+		ctx.font = "15pt Arial";
+		ctx.fillText("Game Saved!", this.x, this.y);}
+	},
+	move: function(){
+		if (this.timeLeft > 0){
+			this.timeLeft--;}
+		if (this.timeLeft < 15){
+			this.color = "grey"}
 	}
 };
 
@@ -817,6 +875,7 @@ var draw = function(){
 	skills.draw();
 	marker.draw();
 	marker2.draw();
+	marker3.draw();
 	if (stats == 1){
 		clear();
 		drawBG();
@@ -884,6 +943,21 @@ var keys = function(){
 		hitCooldown = 30;
 		player.health = 1;
 		player.x = -1;}}
+	// P - Save Game
+	if (80 in keysDown){
+		$.jStorage.set("kills",kills);
+		$.jStorage.set("deaths",deaths);
+		$.jStorage.set("currentWorld",currentWorld);
+		$.jStorage.set("exp",player.exp);
+		$.jStorage.set("level",player.level);
+		$.jStorage.set("health",player.health);
+		$.jStorage.set("maxHealth",player.maxHealth);
+		$.jStorage.set("spikeUnlocked",skills.spikeUnlocked);
+		$.jStorage.set("spikeUses",skills.spikeUses);
+		marker3.timeLeft = 60;
+		marker3.x = 100;
+		marker3.y = 200;
+		marker3.color = "black";}
 	// 1 - Spike
 	if (49 in keysDown && skills.spikeCooldown == 0 && skills.spikeUnlocked == 1){
 		skills.spikeUses++;
@@ -1095,7 +1169,7 @@ var levelUp = function(){
 		player.maxHealth++;
 		player.health = player.maxHealth;
 		marker.timeLeft = 60;
-		marker.x = 100;
+		marker.x = 150;
 		marker.y = 250;}
 };
 
@@ -1357,21 +1431,23 @@ var worldMove = function(){
 
 // Run Everything
 setInterval(function(){
-  keys();
-  player.physics();
-  laser.move();
-  enemy.wander();
-  enemy2.wander();
-  enemyChaser.chase();
-  enemyBoss.chase();
-  enemyBoss2.chase();
-  marker.move();
-  marker2.move();
-  cdHandler();
-  hitGround();
-  hitEnemy();
-  worldMove();
-  levelUp();
-  draw();
-  frames++;
-}, 1000/FPS);
+	keys();
+	cdHandler();
+	if (stats != 1){
+		player.physics();
+		laser.move();
+		enemy.wander();
+		enemy2.wander();
+		enemyChaser.chase();
+		enemyBoss.chase();
+		enemyBoss2.chase();
+		marker.move();
+		marker2.move();
+		marker3.move();
+		hitGround();
+		hitEnemy();
+		worldMove();
+		levelUp();}
+	draw();
+	frames++;}, 
+1000/FPS);
